@@ -1,0 +1,228 @@
+/* Reset para asegurar comportamiento consistente */
+* {
+    box-sizing: border-box;
+  }
+  
+  /* Estilos base para TODAS las tarjetas */
+  .room-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: #fff; /* Color de fondo normal */
+    /* Resetear cualquier estilo que pueda estar causando problemas */
+    box-shadow: none;
+    position: relative; /* Para posicionar elementos de depuración */
+  }
+  
+  .room-card:hover {
+    background-color: #f0f0f0; /* Ligero cambio al pasar el ratón */
+  }
+  
+  /* IMPORTANTE: Clase para la tarjeta seleccionada - MUY ESPECÍFICA */
+  .admin-container .room-grid .room-card.selected {
+    border: 2px solid #007bff !important; /* Asegurar que este borde tiene prioridad */
+    background-color: #e7f3ff !important; /* Color de fondo específico */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.8) !important; /* Sombra más visible */
+  }
+  
+  /* Estilo específico para los elementos internos de la tarjeta seleccionada */
+  .room-card.selected .room-header h3 {
+    color: #0056b3; /* Cambiar color del título en la seleccionada */
+    font-weight: bold;
+  }
+  
+  /* --- Estilos para depuración --- */
+  .debug-info {
+    font-size: 10px;
+    color: #888;
+    background-color: #f5f5f5;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-top: 5px;
+  }
+  
+  .debug-panel {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    background-color: #f9f9f9;
+    font-size: 12px;
+  }
+  
+  .debug-panel h4 {
+    margin-top: 0;
+    color: #555;
+  }
+  
+  /* --- Otros estilos del componente --- */
+  .admin-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .admin-content {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .rooms-list {
+    flex: 1;
+    max-height: 80vh; /* Altura máxima para permitir scroll */
+    overflow-y: auto;  /* Scroll si el contenido excede la altura */
+    padding-right: 10px; /* Espacio para la barra de scroll */
+  }
+  
+  .room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .room-form {
+    flex: 1;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    align-self: flex-start; /* Para que no se estire si la lista es larga */
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Para que padding no aumente el tamaño total */
+  }
+  
+  .form-group textarea {
+    resize: vertical; /* Permitir redimensionar verticalmente */
+  }
+  
+  .status-indicator {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .status-indicator.disponible { background-color: #28a745; }
+  .status-indicator.reservada { background-color: #dc3545; }
+  .status-indicator.mantenimiento { background-color: #ffc107; color: #333; }
+  
+  .status-group label {
+    margin-bottom: 10px;
+  }
+  
+  .status-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+    flex-wrap: wrap; /* Para que los botones pasen abajo si no caben */
+  }
+  
+  .status-btn {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #eee;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  
+  .status-btn:hover:not(:disabled) {
+    background-color: #ddd;
+  }
+  
+  .status-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .status-btn.active {
+    font-weight: bold;
+  }
+  
+  .status-btn.disponible.active { 
+    border-color: #28a745; 
+    background-color: #d4edda; 
+    color: #155724;
+  }
+  
+  .status-btn.reservada.active { 
+    border-color: #dc3545; 
+    background-color: #f8d7da; 
+    color: #721c24;
+  }
+  
+  .status-btn.mantenimiento.active { 
+    border-color: #ffc107; 
+    background-color: #fff3cd; 
+    color: #856404;
+  }
+  
+  .form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  
+  .btn-save, .btn-cancel, .btn-delete, .btn-volver {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .btn-save { background-color: #007bff; color: white; }
+  .btn-cancel { background-color: #6c757d; color: white; }
+  .btn-delete { background-color: #dc3545; color: white; }
+  .btn-volver { background-color: #17a2b8; color: white; margin-top: 20px; }
+  
+  .btn-save:hover { background-color: #0056b3; }
+  .btn-cancel:hover { background-color: #5a6268; }
+  .btn-delete:hover { background-color: #c82333; }
+  .btn-volver:hover { background-color: #138496; }
+  
+  .error {
+    color: red;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+  
+  .loading {
+    font-style: italic;
+    color: #555;
+  }

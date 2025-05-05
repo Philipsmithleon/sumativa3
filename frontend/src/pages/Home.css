@@ -1,0 +1,324 @@
+/* Home.css - Estilo moderno para la página de inicio y login */
+
+:root {
+  --primary-color: #4a6fa5;
+  --primary-light: #6b8cbe;
+  --primary-dark: #345688;
+  --accent-color: #ff9a3c;
+  --text-color: #333;
+  --light-text: #666;
+  --dark-bg: #f5f7fa;
+  --white: #ffffff;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  padding: 1rem;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hotel-title {
+  background-color: var(--primary-color);
+  color: var(--white);
+  margin: 0;
+  padding: 1.5rem;
+  font-size: 1.6rem;
+  text-align: center;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.form-content {
+  padding: 2rem;
+}
+
+.login-title {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--primary-dark);
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra label e input */
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--light-text);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: var(--transition);
+  color: var(--text-color);
+  background-color: #f9f9f9;
+}
+
+input:focus {
+  border-color: var(--primary-light);
+  background-color: var(--white);
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.15);
+  outline: none;
+}
+
+input::placeholder {
+  color: #bbb;
+}
+
+.login-button, 
+.admin-button,
+.register-button,
+.back-button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.login-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.login-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-button:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.register-button {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.register-button:hover {
+  background-color: #e68b35;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-button {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.admin-button:hover {
+  background-color: rgba(74, 111, 165, 0.1);
+  transform: translateY(-2px);
+}
+
+.back-button {
+  background-color: #f5f5f5;
+  color: var(--text-color);
+  border: 1px solid #e0e0e0;
+}
+
+.back-button:hover {
+  background-color: #ebebeb;
+  transform: translateY(-2px);
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #e53935;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #e53935;
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border-left: 4px solid #2e7d32;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.divider::before {
+  margin-right: 0.5rem;
+}
+
+.divider::after {
+  margin-left: 0.5rem;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .login-form {
+    box-shadow: none;
+    border-radius: 0;
+  }
+  
+  .form-content {
+    padding: 1.5rem;
+  }
+  
+  .hotel-title {
+    font-size: 1.4rem;
+    padding: 1.2rem;
+  }
+}
+/* Añade estos estilos a tu archivo Home.css existente */
+
+.featured-section {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.featured-section h2 {
+  text-align: center;
+  color: #1a365d;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.time-info {
+  display: flex;
+  justify-content: center;
+}
+
+.time-card {
+  background: linear-gradient(135deg, #2980b9, #6dd5fa);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  color: white;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.time-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.time-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.current-time {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.time-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.time-details p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-details p strong {
+  margin-right: 8px;
+}
+
+/* Hacer que la página sea más responsiva */
+@media (max-width: 768px) {
+  .featured-items {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .featured-item {
+    width: 100%;
+    max-width: 300px;
+  }
+}
