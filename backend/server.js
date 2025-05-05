@@ -4,18 +4,17 @@ const oracledb = require('oracledb');
 const bcrypt = require('bcrypt');
 const app = express();
 
-// Configuración esencial
+// --------------Config-----------------
 app.use(cors());
 app.use(express.json());
 
-// Configuración de la base de datos
 const dbConfig = {
   user: 'C##C##ETMDY_FOL',
   password: 'abc12345',
   connectString: 'localhost:1521/xe'
 };
-
-// Test connection endpoint
+//---------------------------------------
+// Test
 app.get('/api/test-connection', async (req, res) => {
   let connection;
   try {
@@ -35,7 +34,7 @@ app.get('/api/test-connection', async (req, res) => {
   }
 });
 
-// Login endpoint
+// Endpoint login----------------
 app.post('/api/login', async (req, res) => {
   let connection;
   try {
@@ -47,7 +46,6 @@ app.post('/api/login', async (req, res) => {
 
     connection = await oracledb.getConnection(dbConfig);
     
-    // Consulta mejorada con trim y uppercase
     const result = await connection.execute(
       `SELECT id_usuario, nombre, email, contrasena, rol 
        FROM USUARIOS 
@@ -62,7 +60,6 @@ app.post('/api/login', async (req, res) => {
 
     const user = result.rows[0];
     
-    // Verificación de contraseña con trim
     if (contrasena.trim() !== user.CONTRASENA.trim()) {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
@@ -82,7 +79,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: GET /api/habitaciones - Lista todas las habitaciones
 app.get('/api/habitaciones', async (req, res) => {
   let connection;
   try {
@@ -100,7 +96,6 @@ app.get('/api/habitaciones', async (req, res) => {
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
 
-    // Normalizar nombres de campo para usar id_habitacion en vez de id
     const habitaciones = result.rows.map(room => ({
       id_habitacion: room.ID_HABITACION,
       tipo: room.TIPO || '',
@@ -122,14 +117,12 @@ app.get('/api/habitaciones', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: GET /api/habitaciones/disponibles - Lista habitaciones disponibles
 app.get('/api/habitaciones/disponibles', async (req, res) => {
   let connection;
   try {
     const { inicio, fin } = req.query;
     console.log("Buscando habitaciones disponibles para:", { inicio, fin });
 
-    // Si no hay fechas, devolver simplemente habitaciones con estado disponible
     if (!inicio || !fin) {
       connection = await oracledb.getConnection(dbConfig);
       
@@ -150,7 +143,6 @@ app.get('/api/habitaciones/disponibles', async (req, res) => {
       return res.json(habitaciones);
     }
 
-    // Validación de fechas
     let fechaInicio, fechaFin;
     try {
       fechaInicio = new Date(inicio);
@@ -166,7 +158,6 @@ app.get('/api/habitaciones/disponibles', async (req, res) => {
 
     connection = await oracledb.getConnection(dbConfig);
 
-    // Obtener todas las habitaciones
     const allRoomsResult = await connection.execute(
       `SELECT id_habitacion, tipo, precio, estado, descripcion FROM habitaciones`,
       [],
@@ -180,7 +171,6 @@ app.get('/api/habitaciones/disponibles', async (req, res) => {
       return res.json([]);
     }
 
-    // Obtener habitaciones reservadas para el período
     const reservedRooms = await connection.execute(
       `SELECT id_habitacion 
        FROM reservas 
@@ -196,17 +186,14 @@ app.get('/api/habitaciones/disponibles', async (req, res) => {
     
     console.log(`Habitaciones reservadas para ese período: ${reservedRooms.rows.length}`);
     
-    // Crear un Set de IDs de habitaciones reservadas
     const reservedRoomIds = new Set(reservedRooms.rows.map(row => row.ID_HABITACION));
     
-    // Filtrar habitaciones disponibles
     const availableRooms = allRoomsResult.rows.filter(room => 
       !reservedRoomIds.has(room.ID_HABITACION) && room.ESTADO === 'disponible'
     );
     
     console.log(`Habitaciones disponibles encontradas: ${availableRooms.length}`);
     
-    // Normalizar datos
     const habitacionesDisponibles = availableRooms.map(room => ({
       id_habitacion: Number(room.ID_HABITACION),
       tipo: room.TIPO || 'Sin tipo',
@@ -234,7 +221,6 @@ app.get('/api/habitaciones/disponibles', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: GET /api/habitaciones/:id - Obtiene una habitación por ID
 app.get('/api/habitaciones/:id', async (req, res) => {
   let connection;
   try {
@@ -250,7 +236,6 @@ app.get('/api/habitaciones/:id', async (req, res) => {
 
     if (result.rows.length === 0) return res.status(404).json({ error: 'No encontrada' });
 
-    // Normalizar nombres a minúsculas
     const habitacion = {
       id_habitacion: result.rows[0].ID_HABITACION,
       tipo: result.rows[0].TIPO || '',
@@ -268,13 +253,11 @@ app.get('/api/habitaciones/:id', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: POST /api/habitaciones - Crea una nueva habitación
 app.post('/api/habitaciones', async (req, res) => {
   let connection;
   try {
     const { tipo, precio, estado, descripcion } = req.body;
     
-    // Validación de datos
     if (!tipo || isNaN(parseFloat(precio))) {
       return res.status(400).json({ error: 'Datos inválidos. Tipo y precio son requeridos.' });
     }
@@ -320,24 +303,20 @@ app.post('/api/habitaciones', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: PUT /api/habitaciones/:id - Actualiza una habitación
 app.put('/api/habitaciones/:id', async (req, res) => {
   let connection;
   try {
     const id = parseInt(req.params.id);
     const { tipo, precio, estado, descripcion } = req.body;
 
-    // Validación numérica estricta
     if (isNaN(id) || isNaN(parseFloat(precio))) {
       return res.status(400).json({ error: "Datos numéricos inválidos" });
     }
 
     connection = await oracledb.getConnection(dbConfig);
 
-    // Convertir estado a estándar y validar
     const estadoNormalizado = (estado || '').toLowerCase();
     
-    // Query usando los datos normalizados
     const updateSql = `
       UPDATE HABITACIONES 
       SET TIPO = :tipo, 
@@ -359,7 +338,6 @@ app.put('/api/habitaciones/:id', async (req, res) => {
       { autoCommit: true }
     );
     
-    // Obtener datos actualizados
     const result = await connection.execute(
       `SELECT * FROM HABITACIONES WHERE ID_HABITACION = :id`,
       { id },
@@ -372,7 +350,6 @@ app.put('/api/habitaciones/:id', async (req, res) => {
     
     const updatedRoom = result.rows[0];
     
-    // Normalizar respuesta
     const habitacionActualizada = {
       id_habitacion: updatedRoom.ID_HABITACION,
       tipo: updatedRoom.TIPO || '',
@@ -394,7 +371,6 @@ app.put('/api/habitaciones/:id', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: DELETE /api/habitaciones/:id - Elimina una habitación
 app.delete('/api/habitaciones/:id', async (req, res) => {
   let connection;
   try {
@@ -405,7 +381,6 @@ app.delete('/api/habitaciones/:id', async (req, res) => {
     
     connection = await oracledb.getConnection(dbConfig);
 
-    // Verificar existencia primero
     const checkResult = await connection.execute(
       `SELECT ID_HABITACION FROM HABITACIONES WHERE ID_HABITACION = :id`,
       { id }
@@ -415,13 +390,11 @@ app.delete('/api/habitaciones/:id', async (req, res) => {
       return res.status(404).json({ error: "Habitación no encontrada" });
     }
 
-    // Eliminar reservas relacionadas primero
     await connection.execute(
       `DELETE FROM RESERVAS WHERE ID_HABITACION = :id`,
       { id }
     );
 
-    // Eliminar habitación
     await connection.execute(
       `DELETE FROM HABITACIONES WHERE ID_HABITACION = :id`,
       { id }
@@ -438,14 +411,12 @@ app.delete('/api/habitaciones/:id', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: POST /api/reservas - Crea una nueva reserva
 app.post('/api/reservas', async (req, res) => {
   let connection;
   try {
     const { id_usuario, id_habitacion, fecha_inicio, fecha_fin } = req.body;
     console.log("Intentando crear reserva:", req.body);
 
-    // Validación de entrada
     if (!id_usuario || !id_habitacion || !fecha_inicio || !fecha_fin) {
       return res.status(400).json({ error: 'Faltan datos para la reserva (usuario, habitación, fechas).' });
     }
@@ -457,7 +428,6 @@ app.post('/api/reservas', async (req, res) => {
 
     connection = await oracledb.getConnection(dbConfig);
 
-    // Verificar disponibilidad
     const checkSql = `
       SELECT COUNT(*) as count
       FROM reservas r
@@ -482,7 +452,6 @@ app.post('/api/reservas', async (req, res) => {
       return res.status(409).json({ error: 'La habitación ya está reservada para las fechas seleccionadas.' });
     }
 
-    // Crear la reserva
     const insertSql = `
       INSERT INTO reservas
       (id_usuario, id_habitacion, fecha_inicio, fecha_fin, estado)
@@ -534,7 +503,6 @@ app.post('/api/reservas', async (req, res) => {
   }
 });
 
-// ENDPOINT FIJO: GET /api/reservas - Obtiene todas las reservas
 app.get('/api/reservas', async (req, res) => {
   let connection;
   try {
@@ -550,7 +518,6 @@ app.get('/api/reservas', async (req, res) => {
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     
-    // Normalizar nombres de campo
     const reservas = result.rows.map(reserva => ({
       id_reserva: reserva.ID_RESERVA,
       id_usuario: reserva.ID_USUARIO,
@@ -577,7 +544,7 @@ app.get('/api/reservas', async (req, res) => {
   }
 });
 
-// Endpoint de diagnóstico para ver todas las habitaciones con detalles completos
+// Endpoint diagnostico
 app.get('/api/debug/habitaciones', async (req, res) => {
   let connection;
   try {
@@ -589,7 +556,6 @@ app.get('/api/debug/habitaciones', async (req, res) => {
       { outFormat: oracledb.OUT_FORMAT_OBJECT }
     );
     
-    // Mostrar detalles completos para diagnóstico
     const debug_info = {
       total_habitaciones: result.rows.length,
       fecha_consulta: new Date().toISOString(),
@@ -621,13 +587,13 @@ app.get('/api/debug/habitaciones', async (req, res) => {
   }
 });
 
-// Nuevo endpoint para el registro de usuarios
+// Registro endpoint-----------------
 app.post('/api/registro', async (req, res) => {
   let connection;
   try {
     const { nombre, email, contrasena } = req.body;
     
-    // Validación de entrada
+    // Valida-------------
     if (!nombre || !email || !contrasena) {
       return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
